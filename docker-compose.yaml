@@ -13,10 +13,12 @@ services:
     image: quay.io/keycloak/keycloak:17.0.0-legacy
     ports:
       - "8080:8080"
+      - "8787:8787"
     volumes:
       - ./startup.cli:/opt/jboss/startup-scripts/startup.cli
       - ./js-console.war:/opt/jboss/keycloak/standalone/deployments/js-console.war:z
       - ./realm.json:/realm.json
+      - ./keycloak-model-infinispan-patch/target/keycloak-model-infinispan-patch.jar:/opt/jboss/keycloak/modules/system/layers/keycloak/org/keycloak/keycloak-model-infinispan/main/keycloak-model-infinispan-17.0.0.jar:z
     environment:
       INFINISPAN_HOST: "infinispan"
       DB_VENDOR: POSTGRES
@@ -42,6 +44,16 @@ services:
       JGROUPS_DISCOVERY_PROPERTIES: datasource_jndi_name=java:jboss/datasources/KeycloakDS,info_writer_sleep_time=500,initialize_sql="CREATE TABLE IF NOT EXISTS JGROUPSPING ( own_addr varchar(200) NOT NULL, cluster_name varchar(200) NOT NULL, created timestamp default current_timestamp, ping_data BYTEA, constraint PK_JGROUPSPING PRIMARY KEY (own_addr, cluster_name))"
       CACHE_OWNERS_COUNT: 2
       KEYCLOAK_IMPORT: /realm.json
+    command:
+      - "--debug"
+      - "*:8787"
+      - "--server-config"
+      - "standalone-ha.xml"
+      - "-b"
+      - "0.0.0.0"
+      - "-bmanagement"
+      - "0.0.0.0"
+      - "-Dwildfly.statistics-enabled=true"
     links:
       - postgres
       - infinispan
