@@ -29,6 +29,7 @@ import org.infinispan.client.hotrod.Flag;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.VersionedValue;
 import org.jboss.logging.Logger;
+import org.keycloak.common.util.Time;
 import org.keycloak.connections.infinispan.TopologyInfo;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
@@ -130,8 +131,10 @@ public class RemoteCacheInvoker {
                 break;
             case REPLACE:
                 // BEGIN-PATCH
-                //replace(topology, remoteCache, task.getLifespanMs(), maxIdleMs, key, task);
-                replace(topology, remoteCache, -1, maxIdleMs, key, task);
+                long lifespanPatch = Time.currentTimeMillis() + task.getLifespanMs();
+                long maxIdlePatch = Time.currentTimeMillis() + maxIdleMs;
+                replace(topology, remoteCache, lifespanPatch, maxIdlePatch, key, task);
+//                replace(topology, remoteCache, -1, maxIdleMs, key, task);
                 // END-PATCH
                 break;
             default:
