@@ -10,7 +10,7 @@ services:
       - "5432:5432"
   
   keycloak:
-    image: quay.io/keycloak/keycloak:17.0.0-legacy
+    image: quay.io/keycloak/keycloak:17.0.1-legacy
     ports:
       - "8080:8080"
       - "8787:8787"
@@ -18,7 +18,7 @@ services:
       - ./startup.cli:/opt/jboss/startup-scripts/startup.cli
       - ./js-console.war:/opt/jboss/keycloak/standalone/deployments/js-console.war:z
       - ./realm.json:/realm.json
-      - ./keycloak-model-infinispan-patch/target/keycloak-model-infinispan-patch.jar:/opt/jboss/keycloak/modules/system/layers/keycloak/org/keycloak/keycloak-model-infinispan/main/keycloak-model-infinispan-17.0.0.jar:z
+      - ./keycloak-model-infinispan-patch/target/keycloak-model-infinispan-patch.jar:/opt/jboss/keycloak/modules/system/layers/keycloak/org/keycloak/keycloak-model-infinispan/main/keycloak-model-infinispan-17.0.1.jar:z
     environment:
       INFINISPAN_HOST: "infinispan"
       DB_VENDOR: POSTGRES
